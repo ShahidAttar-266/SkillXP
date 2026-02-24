@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSS Course | SkilXP</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <nav>
+        <a href="index.html" class="logo">SkilXP</a>
+        <div class="menu-toggle" onclick="toggleMenu()">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+        <div class="nav-links">
+            <a href="index.html">Courses</a>
+            <a href="dashboard.html">Dashboard</a>
+            <span class="xp-badge total-xp">0 XP</span>
+        </div>
+    </nav>
+
+    <div class="container">
+        <a href="index.html"
+            style="text-decoration: none; color: var(--primary-color); display: inline-block; margin-bottom: 1rem;">←
+            Back to Courses</a>
+        <h1 style="font-size: 2.5rem; margin-bottom: 0.5rem;">CSS Styling</h1>
+        <p style="color: var(--text-muted); margin-bottom: 2rem;">Design beautiful websites with 5 essential CSS levels.
+        </p>
+
+        <div class="level-list" id="css-level-list">
+            <!-- Dynamically generated -->
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        function renderLevels() {
+            const data = getUserData();
+            const course = data.courses.css;
+            const container = document.getElementById('css-level-list');
+            const exercises = exerciseData.css;
+
+            container.innerHTML = '';
+
+            Object.keys(exercises).forEach(id => {
+                const ex = exercises[id];
+                const levelId = parseInt(id);
+                const isCompleted = course.completedLevels.includes(levelId);
+                const isUnlocked = course.unlockedLevels.includes(levelId);
+
+                let statusText = isCompleted ? 'Completed ✅' : (isUnlocked ? 'Unlocked' : 'Locked 🔒');
+                let cssClass = isCompleted ? 'completed' : (isUnlocked ? 'unlocked' : 'locked');
+
+                const div = document.createElement('div');
+                div.className = `level-item ${cssClass}`;
+                div.innerHTML = `
+                    <div style="display: flex; align-items: center; gap: 1rem;">
+                        <div class="status-icon ${cssClass}">${isCompleted ? '✓' : ''}</div>
+                        <div>
+                            <span style="display: block; font-weight: 700;">${ex.title}</span>
+                            <span style="font-size: 0.8rem; color: var(--text-muted);">${isUnlocked ? 'Start Learning' : 'Complete previous level to unlock'}</span>
+                        </div>
+                    </div>
+                    <span class="level-status">${statusText}</span>
+                `;
+
+                if (isUnlocked) {
+                    div.onclick = () => window.location.href = `exercise.html?course=css&level=${levelId}`;
+                }
+
+                container.appendChild(div);
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', renderLevels);
+    </script>
+</body>
+
+</html>

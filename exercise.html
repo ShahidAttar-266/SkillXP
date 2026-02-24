@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exercise | SkilXP</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body style="height: 100vh; overflow: hidden;">
+    <nav style="border-bottom: 1px solid #e2e8f0;">
+        <a href="index.html" class="logo">SkilXP</a>
+
+        <!-- Mobile Tab Switcher -->
+        <div class="mobile-tabs">
+            <button class="tab-btn active" onclick="switchTab('learn')">Learn</button>
+            <button class="tab-btn" onclick="switchTab('code')">Code</button>
+            <button class="tab-btn" onclick="switchTab('output')">Output</button>
+        </div>
+
+        <div class="menu-toggle" onclick="toggleMenu()">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+        <div class="nav-links">
+            <a href="index.html">Courses</a>
+            <a href="dashboard.html">Dashboard</a>
+            <span class="xp-badge total-xp">0 XP</span>
+        </div>
+    </nav>
+
+    <div class="exercise-wrapper">
+        <!-- Sidebar: Level Selection -->
+        <div class="exercise-sidebar" id="sidebar-levels">
+            <!-- Items injected by JS -->
+        </div>
+
+        <!-- Left Panel: Lesson Info -->
+        <div class="panel left-panel" id="learn-panel">
+            <div class="panel-header">
+                <h2 id="level-title" style="font-size: 1.5rem; font-weight: 700;">Level Title</h2>
+            </div>
+            <div class="panel-body">
+                <div class="lesson-box">
+                    <p id="lesson-desc" style="color: var(--text-muted); margin-bottom: 1.5rem;">Lesson description...
+                    </p>
+                    <h4 style="margin-bottom: 0.5rem;">Example:</h4>
+                    <code id="code-example"
+                        style="display: block; background: #f1f5f9; padding: 1rem; border-radius: 6px; font-family: monospace; white-space: pre-wrap;"></code>
+                </div>
+                <div class="lesson-box"
+                    style="background: #f8fafc; padding: 1.5rem; border-radius: 12px; border: 1px solid #e2e8f0;">
+                    <h4 style="margin-bottom: 0.5rem; color: var(--primary-color);">Exercise Instructions:</h4>
+                    <p id="exercise-instr" style="font-size: 1rem;"></p>
+                </div>
+                <div style="display: flex; gap: 1rem; align-items: center; margin-top: 1.5rem;">
+                    <button class="btn" style="background: var(--text-muted); padding: 0.5rem 1rem; font-size: 0.8rem;"
+                        onclick="toggleHint()">Get Hint</button>
+                    <!-- Start Coding button for mobile -->
+                    <button class="btn primary start-coding-btn"
+                        style="display: none; padding: 0.5rem 1.5rem; font-size: 0.8rem;"
+                        onclick="switchTab('code')">Start coding</button>
+                </div>
+                <div id="hint-text"
+                    style="display: none; margin-top: 1rem; padding: 1rem; background: #fef9c3; border-left: 4px solid var(--warning); border-radius: 4px; font-size: 0.9rem;">
+                </div>
+            </div>
+        </div>
+
+        <!-- Center Panel: Editor -->
+        <div class="panel center-panel" id="editor-panel">
+            <div class="editor-header">index.html</div>
+            <div class="editor-container" style="position: relative;">
+                <textarea id="code-editor" spellcheck="false"></textarea>
+                <div class="editor-footer">
+                    <button id="run-btn" class="btn" style="background: #334155;">Run Code</button>
+                    <button id="submit-btn" class="btn primary">Submit Answer</button>
+                    <div id="feedback" style="margin-left: auto;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Right Panel: Preview -->
+    <div class="panel right-panel" id="preview-panel">
+        <div class="preview-header">LIVE PREVIEW</div>
+        <iframe id="preview-frame" style="flex: 1;"></iframe>
+    </div>
+    </div>
+
+    <!-- Global Navigation Buttons -->
+    <div class="navigation-buttons">
+        <a href="#" id="back-btn" class="btn-nav">Back</a>
+        <a href="#" id="next-btn" class="btn-nav primary">Next</a>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        // Override loadExercise to include sidebar rendering
+        const originalLoadExercise = loadExercise;
+        window.loadExercise = function () {
+            const urlParams = new URLSearchParams(window.location.search);
+            const courseId = urlParams.get('course');
+            const levelId = parseInt(urlParams.get('level'));
+            const data = getUserData();
+
+            // Call original loader
+            originalLoadExercise();
+
+            // Render Sidebar
+            const sidebar = document.getElementById('sidebar-levels');
+            const exercises = exerciseData[courseId];
+            sidebar.innerHTML = `<div style="padding: 1.5rem; font-weight: 700; color: #fff; border-bottom: 1px solid #1e293b;">Course Levels</div>`;
+
+            Object.keys(exercises).forEach(id => {
+                const ex = exercises[id];
+                const isCompleted = data.courses[courseId].completedLevels.includes(parseInt(id));
+                const isUnlocked = data.courses[courseId].unlockedLevels.includes(parseInt(id));
+                const isActive = parseInt(id) === levelId;
+
+                let statusClass = isCompleted ? 'completed' : (isUnlocked ? 'unlocked' : 'locked');
+                let statusIcon = isCompleted ? '✓' : (isUnlocked ? '' : '🔒');
+
+                const item = document.createElement('div');
+                item.className = `sidebar-item ${isActive ? 'active' : ''} ${!isUnlocked ? 'locked' : ''}`;
+                item.innerHTML = `
+                    <div class="status-icon ${statusClass}">${statusIcon}</div>
+                    <div>
+                        <div style="font-weight: 600;">Exercise ${id.padStart(2, '0')}</div>
+                        <div style="font-size: 0.75rem; color: var(--text-muted);">${ex.title.split('. ')[1] || ex.title}</div>
+                    </div>
+                `;
+
+                if (isUnlocked) {
+                    item.onclick = () => window.location.href = `exercise.html?course=${courseId}&level=${id}`;
+                }
+                sidebar.appendChild(item);
+            });
+
+            // Update Nav buttons
+            const backBtn = document.getElementById('back-btn');
+            const nextBtn = document.getElementById('next-btn');
+
+            if (levelId > 1) {
+                backBtn.style.visibility = 'visible';
+                backBtn.href = `exercise.html?course=${courseId}&level=${levelId - 1}`;
+            } else {
+                backBtn.style.visibility = 'hidden';
+            }
+
+            const nextLevelId = levelId + 1;
+            if (exercises[nextLevelId] && data.courses[courseId].unlockedLevels.includes(nextLevelId)) {
+                nextBtn.style.visibility = 'visible';
+                nextBtn.href = `exercise.html?course=${courseId}&level=${nextLevelId}`;
+            } else {
+                nextBtn.style.visibility = 'hidden';
+            }
+
+            // Update nav course breadcrumb
+            document.getElementById('nav-course-name').textContent = `${courseId.toUpperCase()} / ${levelId.toString().padStart(2, '0')}`;
+        };
+    </script>
+</body>
+
+</html>
