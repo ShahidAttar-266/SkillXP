@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exercise | SkillXP</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body style="height: 100vh; overflow: hidden;">
+    <nav style="border-bottom: 1px solid #e2e8f0;">
+        <a href="index.html" class="logo">SkillXP</a>
+
+        <!-- Mobile Tab Switcher -->
+        <div class="mobile-tabs">
+            <button class="tab-btn active" onclick="switchTab('learn')">Learn</button>
+            <button class="tab-btn" onclick="switchTab('code')">Code</button>
+            <button class="tab-btn" onclick="switchTab('output')">Output</button>
+        </div>
+
+        <div class="menu-toggle" onclick="toggleMenu()">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+        <div class="nav-links">
+            <span id="nav-course-name"
+                style="margin-right: 1.5rem; color: var(--text-muted); font-size: 0.9rem;"></span>
+            <a href="index.html">Courses</a>
+            <a href="dashboard.html">Dashboard</a>
+            <span class="xp-badge total-xp">0 XP</span>
+        </div>
+    </nav>
+
+    <div class="exercise-wrapper">
+        <!-- Sidebar: Level Selection -->
+        <div class="exercise-sidebar" id="sidebar-levels">
+            <!-- Items injected by JS -->
+        </div>
+
+        <!-- Left Panel: Lesson Info -->
+        <div class="panel left-panel" id="learn-panel">
+            <div class="panel-header">
+                <h2 id="level-title" style="font-size: 1.5rem; font-weight: 700;">Level Title</h2>
+            </div>
+            <div class="panel-body">
+                <div class="lesson-box">
+                    <p id="lesson-desc" style="color: var(--text-muted); margin-bottom: 1.5rem;">Lesson description...
+                    </p>
+                    <h4 style="margin-bottom: 0.5rem;">Example:</h4>
+                    <code id="code-example"
+                        style="display: block; background: #f1f5f9; padding: 1rem; border-radius: 6px; font-family: monospace; white-space: pre-wrap;"></code>
+                </div>
+                <div class="lesson-box"
+                    style="background: #f8fafc; padding: 1.5rem; border-radius: 12px; border: 1px solid #e2e8f0;">
+                    <h4 style="margin-bottom: 0.5rem; color: var(--primary-color);">Exercise Instructions:</h4>
+                    <p id="exercise-instr" style="font-size: 1rem;"></p>
+                </div>
+                <div style="display: flex; gap: 1rem; align-items: center; margin-top: 1.5rem;">
+                    <button class="btn" style="background: var(--text-muted); padding: 0.5rem 1rem; font-size: 0.8rem;"
+                        onclick="toggleHint()">Get Hint</button>
+                    <button id="solution-btn" class="btn"
+                        style="background: var(--primary-color); padding: 0.5rem 1rem; font-size: 0.8rem; color: white;"
+                        onclick="toggleSolution()">Show Solution</button>
+                    <!-- Start Coding button for mobile -->
+                    <button class="btn primary start-coding-btn"
+                        style="display: none; padding: 0.5rem 1.5rem; font-size: 0.8rem;"
+                        onclick="switchTab('code')">Start coding</button>
+                </div>
+                <div id="hint-text"
+                    style="display: none; margin-top: 1rem; padding: 1rem; background: #fef9c3; border-left: 4px solid var(--warning); border-radius: 4px; font-size: 0.9rem;">
+                </div>
+                <div id="solution-text"
+                    style="display: none; margin-top: 1rem; padding: 1rem; background: #dcfce7; border-left: 4px solid var(--success); border-radius: 4px; font-size: 0.9rem;">
+                    <h4 style="margin-bottom: 0.5rem; color: #166534;">Solution:</h4>
+                    <code id="solution-code"
+                        style="display: block; white-space: pre-wrap; font-family: monospace; color: #166534;"></code>
+                </div>
+            </div>
+        </div>
+
+        <!-- Center Panel: Editor -->
+        <div class="panel center-panel" id="editor-panel">
+            <div class="editor-header">index.html</div>
+            <div class="editor-container" style="position: relative;">
+                <textarea id="code-editor" spellcheck="false"></textarea>
+                <div class="editor-footer">
+                    <button id="run-btn" class="btn" style="background: #334155;">Run Code</button>
+                    <button id="submit-btn" class="btn primary">Submit Answer</button>
+                    <div id="feedback" style="margin-left: auto;"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Panel: Preview -->
+        <div class="panel right-panel" id="preview-panel">
+            <div class="preview-header">LIVE PREVIEW</div>
+            <iframe id="preview-frame" style="flex: 1;"></iframe>
+        </div>
+    </div>
+
+    <!-- Global Navigation Buttons -->
+    <div class="navigation-buttons">
+        <a href="#" id="back-btn" class="btn-nav">Back</a>
+        <a href="#" id="next-btn" class="btn-nav primary">Next</a>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>

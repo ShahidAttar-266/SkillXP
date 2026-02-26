@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up | SkillXP</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body class="auth-page">
+    <nav>
+        <a href="index.html" class="logo">SkillXP</a>
+        <div class="menu-toggle" onclick="toggleMenu()">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+        <div class="nav-links">
+            <a href="login.html">Login</a>
+            <a href="signup.html" class="btn primary" style="padding: 0.5rem 1rem;">Register</a>
+        </div>
+    </nav>
+
+    <div class="auth-wrapper">
+        <div class="auth-card">
+            <div class="auth-header">
+                <h1>Create Account</h1>
+                <p>Start your learning journey today!</p>
+            </div>
+
+            <div id="error-box" class="error-message" style="display: none;"></div>
+
+            <form class="auth-form" id="signup-form">
+                <div class="form-group">
+                    <label for="name">Full Name</label>
+                    <input type="text" id="name" placeholder="John Doe" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" placeholder="john@example.com" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" placeholder="••••••••" required>
+                </div>
+                <div class="form-group">
+                    <label for="confirm-password">Confirm Password</label>
+                    <input type="password" id="confirm-password" placeholder="••••••••" required>
+                </div>
+                <button type="submit" class="btn-auth">Create Account</button>
+            </form>
+
+            <div class="auth-footer">
+                Already have an account? <a href="login.html">Log in</a>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        // Use the function from script.js when implemented
+        document.getElementById('signup-form').addEventListener('submit', function (e) {
+            e.preventDefault();
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirm-password').value;
+            const errorBox = document.getElementById('error-box');
+
+            if (password !== confirmPassword) {
+                errorBox.textContent = "Passwords do not match!";
+                errorBox.style.display = "block";
+                return;
+            }
+
+            if (registerUser(name, email, password)) {
+                window.location.href = 'login.html?registered=true';
+            } else {
+                errorBox.textContent = "Email already registered!";
+                errorBox.style.display = "block";
+            }
+        });
+    </script>
+</body>
+
+</html>
